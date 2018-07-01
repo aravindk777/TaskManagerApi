@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace TaskManApi.Tests
 {
     [TestClass]
-    public class UnitTest1
+    public class TaskControllerUnitTest
     {
         [TestMethod]
         public void TestMethod1()

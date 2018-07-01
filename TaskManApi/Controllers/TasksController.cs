@@ -15,7 +15,17 @@ namespace TaskManApi.Controllers
 {
     public class TasksController : ApiController
     {
-        private TaskManDb db = new TaskManDb();
+        private ITaskManDb db;// = new TaskManDb();
+
+        public TasksController(ITaskManDb _taskManDb)
+        {
+            db = _taskManDb;
+        }
+
+        protected TasksController()
+        {
+            db = new TaskManDb();
+        }
 
         // GET: api/Tasks
         /// <summary>
@@ -42,19 +52,27 @@ namespace TaskManApi.Controllers
 
         // PUT: api/Tasks/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutTask(Guid id, Task task)
+        public IHttpActionResult PutTask(Task task)
         {
+            if (task.TaskId.Equals(Guid.NewGuid()))
+                return BadRequest("Id is invalid!");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != task.TaskId)
-            {
-                return BadRequest();
-            }
+            var existingTask = db.Tasks.Find(task.TaskId);
+            if (!task.TaskId.Equals(existingTask.TaskId))
+                return NotFound();
 
-            db.Entry(task).State = EntityState.Modified;
+            if (task.ParentTaskId.HasValue) existingTask.ParentTaskId = task.ParentTaskId;
+            if (!string.IsNullOrEmpty(task.TaskName) && !existingTask.TaskName.Equals(task.TaskName)) existingTask.TaskName = task.TaskName;
+            existingTask.Priority = task.Priority;
+            if (task.StartDate.HasValue) existingTask.StartDate = task.StartDate;
+            if (task.EndDate.HasValue) existingTask.EndDate = task.EndDate;
+
+            ((TaskManDb) db).Entry(existingTask).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +80,7 @@ namespace TaskManApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TaskExists(id))
+                if (!TaskExists(task.TaskId))
                 {
                     return NotFound();
                 }
@@ -85,9 +103,7 @@ namespace TaskManApi.Controllers
             }
 
             task.TaskId = Guid.NewGuid();
-            if (task.ParentTaskId != null)
-                task.ParentTaskId = Guid.Empty;
-
+            
             if (task.StartDate.HasValue)
             {
                 if (task.EndDate.HasValue && !task.EndDate.Value.Equals(DateTime.MinValue) && task.EndDate.Value.CompareTo(task.StartDate.Value) <= 0)
