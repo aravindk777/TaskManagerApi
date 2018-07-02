@@ -17,7 +17,7 @@ namespace TaskManApi.Tests.TestDataModels
     /// Referred from the MS docs for Unit testing Web API with EF
     /// </summary>
     /// <typeparam name="T">Typename as class</typeparam>
-    class TestDbContext<T> : DbSet<T>, IQueryable, IEnumerable<T> where T : class
+    internal class TestDbContext<T> : DbSet<T>, IQueryable, IEnumerable<T> where T : class
     {
         ObservableCollection<T> _data;
         IQueryable _query;
@@ -32,6 +32,12 @@ namespace TaskManApi.Tests.TestDataModels
         {
             _data.Add(item);
             return item;
+        }
+
+        public override IEnumerable<T> AddRange(IEnumerable<T> entities)
+        {
+            entities.ToList().ForEach(item => _data.Add(item));
+            return _data.AsEnumerable();
         }
 
         public override T Remove(T item)
@@ -84,6 +90,11 @@ namespace TaskManApi.Tests.TestDataModels
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
             return _data.GetEnumerator();
+        }
+
+        public override T Find(params object[] keyValues)
+        {
+            return _data.SingleOrDefault(item => item.Equals(keyValues.Single()));
         }
     }
 }

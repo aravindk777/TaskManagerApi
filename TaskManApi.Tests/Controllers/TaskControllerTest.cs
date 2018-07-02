@@ -43,7 +43,7 @@ namespace TaskManApi.Tests.Controllers
                                         new Models.Task() { TaskId = Guid.NewGuid(), TaskName = "test-task-2", Priority = 10},
                                         new Models.Task() { TaskId = Guid.NewGuid(), TaskName = "test-task-3", Priority = 10},
                                     };
-            var testContext = new TestTaskManDbContext(listOfTestTasks);
+            var testContext = new TestTaskManDb(listOfTestTasks);
             var ctrler = new TasksController(testContext);
             var result = ctrler.GetTasks();
 
@@ -57,7 +57,7 @@ namespace TaskManApi.Tests.Controllers
         [TestMethod]
         public void GetAllTasks_When_No_DataExists()
         {
-            var testContext = new TestTaskManDbContext();
+            var testContext = new TestTaskManDb();
             var ctrler = new TasksController(testContext);
             var result = ctrler.GetTasks();
 
@@ -75,7 +75,7 @@ namespace TaskManApi.Tests.Controllers
                                         new Models.Task() { TaskId = Guid.NewGuid(), TaskName = "test-task-2", Priority = 10},
                                         new Models.Task() { TaskId = Guid.NewGuid(), TaskName = "test-task-3", Priority = 10},
                                     };
-            var testContext = new TestTaskManDbContext(testTasksForThis);
+            var testContext = new TestTaskManDb(testTasksForThis);
 
             var ctrler = new TasksController(testContext);
             var testTaskData = testTasksForThis.FirstOrDefault();
@@ -89,11 +89,39 @@ namespace TaskManApi.Tests.Controllers
         [TestMethod]
         public void GetTask_Test_For_Invalid_TaskId()
         {
-            var testCtx = new TestTaskManDbContext();
+            var testCtx = new TestTaskManDb();
             ctrler = new TasksController(testCtx);
-            var result = ctrler.GetTask(Guid.NewGuid()) as NotFoundResult;
+            var result = ctrler.GetTask(Guid.NewGuid()) as OkNegotiatedContentResult<Models.Task>;
 
-            
+            Assert.IsNull(result.Content);
+        }
+
+        [TestMethod]
+        public void Test_For_PostNewTask()
+        {
+            var testCxt = new TestTaskManDb();
+            ctrler = new TasksController(testCxt);
+
+            var newTestTask = new Models.Task() { TaskName = "Testing for posting a new task", Priority = 5, StartDate = DateTime.Today };
+            var result = ctrler.PostTask(newTestTask) as CreatedAtRouteNegotiatedContentResult<Models.Task>;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Content);
+            Assert.AreEqual(newTestTask.TaskName, result.Content.TaskName);
+        }
+
+        [TestMethod]
+        public void Test_For_DeleteExistingTask()
+        {
+            var testCxt = new TestTaskManDb();
+            testCxt.Tasks = TestDataForTaskModel.GetTestDataForTasks();
+            ctrler = new TasksController(testCxt);
+            var taskToDelete = testCxt.Tasks.FirstOrDefault();
+            var result = ctrler.DeleteTask(taskToDelete.TaskId) as OkNegotiatedContentResult<Models.Task>;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Content);
+            Assert.IsNull(testCxt.Tasks.Find(taskToDelete.TaskId));
         }
     }
 }

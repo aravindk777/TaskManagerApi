@@ -44,7 +44,8 @@ namespace TaskManApi.Controllers
             Task task = db.Tasks.FirstOrDefault(t => t.TaskId.Equals(id));  //db.Tasks.Find(id);
             if (task == null)
             {
-                return Ok(string.Format("No task available for the Id {{0}}", id));
+                return Ok(task);
+                //return Ok(string.Format("No task available for the Id [{0}]", id));
             }
 
             return Ok(task);
@@ -138,11 +139,17 @@ namespace TaskManApi.Controllers
             Task task = db.Tasks.Find(id);
             if (task == null)
             {
-                return NotFound();
+                return Ok(task);
             }
-
-            db.Tasks.Remove(task);
-            db.SaveChanges();
+            try
+            {
+                db.Tasks.Remove(task);
+                db.SaveChanges();
+            }
+            catch(DbUpdateException updateEx)
+            {
+                return Conflict();
+            }
 
             return Ok(task);
         }

@@ -11,14 +11,14 @@ using TaskManApi.Tests.Data;
 
 namespace TaskManApi.Tests.TestDataModels
 {
-    public class TestTaskManDbContext : ITaskManDb
+    public class TestTaskManDb : ITaskManDb
     {
-        public TestTaskManDbContext()
+        public TestTaskManDb()
         {
-            Tasks = new TestTaskManDbSet();
+            Tasks = new TestDbSet();
         }
 
-        public TestTaskManDbContext(List<Models.Task> listOfTestTasks)
+        public TestTaskManDb(List<Models.Task> listOfTestTasks)
         {
             //overriding to Test DbSet we have created
             Tasks = TestDataForTaskModel.GetTestDataForTasks(listOfTestTasks);
