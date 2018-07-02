@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManApi.Data;
 
 namespace TaskManApi.Tests.TestDataModels
 {
-    class TestTaskManDbSet : TestDbContext<Models.Task>
+    internal class TestTaskManDbSet : TestDbContext<Models.Task>
     {
         public override Models.Task Find(params object[] keyValues)
         {

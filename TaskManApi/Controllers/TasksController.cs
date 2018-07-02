@@ -22,10 +22,10 @@ namespace TaskManApi.Controllers
             db = _taskManDb;
         }
 
-        protected TasksController()
-        {
-            db = new TaskManDb();
-        }
+        //public TasksController()
+        //{
+        //    db = new TaskManDb();
+        //}
 
         // GET: api/Tasks
         /// <summary>
@@ -41,10 +41,10 @@ namespace TaskManApi.Controllers
         [ResponseType(typeof(Task))]
         public IHttpActionResult GetTask(Guid id)
         {
-            Task task = db.Tasks.Find(id);
+            Task task = db.Tasks.FirstOrDefault(t => t.TaskId.Equals(id));  //db.Tasks.Find(id);
             if (task == null)
             {
-                return NotFound();
+                return Ok(string.Format("No task available for the Id {{0}}", id));
             }
 
             return Ok(task);
