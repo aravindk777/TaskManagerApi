@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManApi", "TaskManApi\Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManApi.Tests", "TaskManApi.Tests\TaskManApi.Tests.csproj", "{60479C90-8ED3-454C-8D2C-2260E1B708AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskMan.Data", "TaskMan.Data\TaskMan.Data.csproj", "{3EFEE86E-3A86-4388-8BF6-45B0D5720855}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskMan.Business", "TaskMan.Business\TaskMan.Business.csproj", "{5F41FA2E-9D93-4E7B-9E38-8C3E8A255EAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{60479C90-8ED3-454C-8D2C-2260E1B708AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60479C90-8ED3-454C-8D2C-2260E1B708AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60479C90-8ED3-454C-8D2C-2260E1B708AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EFEE86E-3A86-4388-8BF6-45B0D5720855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EFEE86E-3A86-4388-8BF6-45B0D5720855}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EFEE86E-3A86-4388-8BF6-45B0D5720855}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EFEE86E-3A86-4388-8BF6-45B0D5720855}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F41FA2E-9D93-4E7B-9E38-8C3E8A255EAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F41FA2E-9D93-4E7B-9E38-8C3E8A255EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F41FA2E-9D93-4E7B-9E38-8C3E8A255EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F41FA2E-9D93-4E7B-9E38-8C3E8A255EAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
