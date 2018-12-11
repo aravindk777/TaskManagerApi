@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Unity.AspNet.WebApi;
 
 namespace TaskManApi
 {
@@ -10,6 +11,8 @@ namespace TaskManApi
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            // -- Enable CORS
+            config.EnableCors();
 
             // Web API routes
             config.MapHttpAttributeRoutes();

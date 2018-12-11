@@ -1,13 +1,15 @@
-namespace TaskMan.Data
+namespace TaskMan.Data.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
+    /// <summary>
+    /// Table name renamed here as MyTask to negate the conflict with System.Threading.Task. 
+    /// I could have used the full naming convention format including Namespace but i wonder signature exposed through api may conflict or confusing
+    /// </summary>
     [Table("Task")]
-    public partial class Task
+    public partial class MyTask
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -19,6 +21,6 @@ namespace TaskMan.Data
         public DateTime? EndDate { get; set; }
         public int Priority { get; set; }
         public string Status { get; set; }
-        public virtual Task ParentTask { get; set; }
+        public virtual MyTask ParentTask { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-namespace TaskMan.Data
+namespace TaskMan.Data.Entities
 {
     using System;
     using System.Data.Entity;
@@ -6,16 +6,17 @@ namespace TaskMan.Data
     using System.Linq;
     using System.Data.Entity.ModelConfiguration.Conventions;
     using System.Data.Entity.Migrations;
+    using System.Configuration;
 
-    public partial class TaskManager : DbContext
+    public partial class TaskManagerContext : DbContext
     {
-        public TaskManager()
-            : base("name=TaskManagerDb")
+        public TaskManagerContext()
+            : base(ConfigurationManager.ConnectionStrings["TaskManagerDb"].Name)
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<TaskManager>());
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<TaskManagerContext>());
         }
 
-        public virtual DbSet<Task> Tasks { get; set; }
+        public virtual DbSet<MyTask> Tasks { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -28,7 +29,7 @@ namespace TaskMan.Data
              * }
              */
             modelBuilder
-                .Entity<Task>()
+                .Entity<MyTask>()
                     .HasOptional(parent => parent.ParentTask)
                     .WithMany()
                     .HasForeignKey(fk => fk.ParentTaskId)
