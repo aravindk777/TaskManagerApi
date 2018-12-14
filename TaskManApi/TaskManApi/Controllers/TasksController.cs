@@ -16,7 +16,7 @@ namespace TaskManApi.Controllers
 
         public TasksController(ITaskManLogic taskOrchestrator)
         {
-            this.taskOrchestrator = taskOrchestrator ?? throw new ArgumentNullException(nameof(taskOrchestrator), "Missing argument while instantiating the controller");
+            this.taskOrchestrator = taskOrchestrator;
         }
 
         // GET: api/Tasks

@@ -2,10 +2,8 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Results;
 using TaskMan.Business;
+using System.Net.Http;
 using TaskMan.Business.Model;
 using TaskManApi.Controllers;
 
@@ -61,7 +59,7 @@ namespace TaskManApi.Tests.Controller
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<IHttpActionResult>(result);
+            //Assert.IsInstanceOf<HttpResponseMessage>(result);
             Assert.IsNotEmpty(actualData);
             Assert.That(actualData.Count(), Is.EqualTo(expectedCount));
 
