@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace TaskManApi.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class BaseTest
     {
-        [TestMethod]
+        [TestCase]
         public void TestMethod1()
         {
         }

@@ -15,7 +15,7 @@ namespace TaskMan.Business.Extensions
             return entities.Select(ent => 
                     new TaskModel
                     {
-                        TaskId = ent.TaskId, TaskName = ent.TaskName, ParentTaskId = ent.ParentTaskId,
+                        TaskId = ent.TaskId, TaskName = ent.TaskName, ParentTaskId = ent.ParentTaskId, ParentTask = ent.ParentTask?.TaskName??string.Empty, 
                         StartDate = ent.StartDate, EndDate = ent.EndDate, Priority = ent.Priority, Status = ent.Status
                     });
         }
@@ -30,7 +30,8 @@ namespace TaskMan.Business.Extensions
                 StartDate = entity.StartDate,
                 EndDate = entity.EndDate,
                 Priority = entity.Priority,
-                Status = entity.Status
+                Status = entity.Status,
+                ParentTask = entity.ParentTask?.TaskName ?? string.Empty
             };
         }
 

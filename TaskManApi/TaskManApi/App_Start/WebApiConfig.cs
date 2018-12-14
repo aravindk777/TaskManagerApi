@@ -19,9 +19,23 @@ namespace TaskManApi
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "api/{controller}/{TaskId}",
+                defaults: new { TaskId = RouteParameter.Optional }
+                //constraints: new { TaskId = @"^[0-9]+$" }
             );
+
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApiWithActionName",
+            //    routeTemplate: "{controller}/{action}/{name}",
+            //    defaults: null,
+            //    constraints: new { name = @"&^[a-z]+$" }
+            //);
+
+            //config.Routes.MapHttpRoute(
+            //    name: "ApiByAction",
+            //    routeTemplate: "{controller}/{action}",
+            //    defaults: new { action = "Get" }
+            //    );
         }
     }
 }

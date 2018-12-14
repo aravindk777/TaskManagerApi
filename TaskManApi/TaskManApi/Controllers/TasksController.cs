@@ -9,7 +9,7 @@ using TaskMan.Business.Model;
 
 namespace TaskManApi.Controllers
 {
-    [RoutePrefix("tasks")]
+    //[RoutePrefix("api")]
     public class TasksController : ApiController
     {
         ITaskManLogic taskOrchestrator;
@@ -28,13 +28,32 @@ namespace TaskManApi.Controllers
         /// <param name="pageSize">Non-zero based Page Size. Leave it empty or 0 if no pagination is needed</param>
         /// <returns>Collection of Tasks</returns>
         [HttpGet]
-        [Route(Name ="GetAll")]
-        public IHttpActionResult GetAll(int pageIndex = 0, int pageSize = 0)
+        //[Route(Name = "GetAllTasks")]
+        //[ActionName("GetAllTasks")]
+        public HttpResponseMessage GetAllTasks(int pageIndex, int pageSize)
+        {
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                var data = taskOrchestrator.GetAllTasks(Page: pageIndex, TotalRecords: pageSize);
+                result = Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                result = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, new HttpError(ex, true));
+            }
+            return result;
+        }
+
+        //[HttpGet]
+        [Route("api/Tasks/Active")]
+        [ActionName("Active")]
+        public IHttpActionResult GetActiveTasks()
         {
             IHttpActionResult result = Ok();
             try
             {
-                var data = taskOrchestrator.GetAllTasks(Page: pageIndex, TotalRecords: pageSize);
+                var data = taskOrchestrator.GetAllTasks(ActiveOnly: true);
                 result = Ok(data);
             }
             catch (Exception ex)
@@ -44,15 +63,35 @@ namespace TaskManApi.Controllers
             return result;
         }
 
-        // GET: api/Tasks/5
+        //GET: tasks/
+        //[HttpGet]
+        [Route("api/Tasks/Parent")]
+        [ActionName("Parent")]
+        public IHttpActionResult GetParentTasks()
+        {
+            IHttpActionResult result = Ok();
+            try
+            {
+                var data = taskOrchestrator.GetAllTasks(ParentsOnly: true);
+                result = Ok(data);
+            }
+            catch (Exception ex)
+            {
+                result = InternalServerError(ex);
+            }
+            return result;
+        }
+
+        // GET: Tasks/5
         [HttpGet]
-        public IHttpActionResult Get(int taskId)
+        //[ActionName("GetTask")]
+        public IHttpActionResult Get(int TaskId)
         {
             IHttpActionResult result = Ok();
             if (ModelState.IsValid)
                 try
                 {
-                    var data = taskOrchestrator.GetTask(taskId);
+                    var data = taskOrchestrator.GetTask(TaskId);
                     if (data == null)
                         result = NotFound();
                     else
@@ -63,12 +102,12 @@ namespace TaskManApi.Controllers
                     result = InternalServerError(ex);
                 }
             else
-                result = BadRequest();
+                result = BadRequest(ModelState);
 
             return result;
         }
 
-        // POST: api/Tasks
+        // POST: Tasks
         [HttpPost]
         public IHttpActionResult Post([FromBody]TaskModel newTask)
         {
@@ -83,10 +122,10 @@ namespace TaskManApi.Controllers
                     return InternalServerError(ex);
                 }
             else
-                return BadRequest("Invalid Task request");
+                return BadRequest(ModelState);
         }
 
-        // PUT: api/Tasks/5
+        // PUT: Tasks/5
         [HttpPut]
         public IHttpActionResult Put(int taskId, [FromBody]TaskModel value)
         {
@@ -104,10 +143,10 @@ namespace TaskManApi.Controllers
                     return InternalServerError(ex);
                 }
             else
-                return BadRequest("Invalid Task Request");
+                return BadRequest(ModelState);
         }
 
-        // DELETE: api/Tasks/5
+        // DELETE: Tasks/5
         [HttpDelete]
         public IHttpActionResult Delete(int taskId)
         {
