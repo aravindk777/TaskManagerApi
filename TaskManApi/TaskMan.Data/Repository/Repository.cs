@@ -14,7 +14,7 @@ namespace TaskMan.Data.Repository
 
         public Repository(DbContext context)
         {
-            Context = context ?? throw new System.Data.Entity.Core.EntityException("No context found!");
+            Context = context;
         }
 
         public int Add(T entity)
