@@ -47,9 +47,9 @@ namespace TaskMan.Business
         public IEnumerable<TaskModel> GetAllTasks(bool ParentsOnly = false, bool ActiveOnly = false, int Page = 0, int TotalRecords = 0)
         {
             IEnumerable<MyTask> tasks;
-            if (ActiveOnly)
+            if (ActiveOnly && !ParentsOnly)
                 tasks = taskRepository.GetActiveTasks(Page, TotalRecords);
-            else if (ParentsOnly)
+            else if (ParentsOnly && !ActiveOnly)
             {
                 if (Page > 0 && TotalRecords > 0)
                     tasks = taskRepository.GetPaginatedAllTasks(Page, TotalRecords);
@@ -60,8 +60,10 @@ namespace TaskMan.Business
             else if (ActiveOnly && ParentsOnly)
                 tasks = taskRepository.GetActiveTasks(Page, TotalRecords)
                         .Where(task => !task.ParentTaskId.HasValue);
-            else
+            else if (Page > 0 && TotalRecords > 0 && !ActiveOnly && !ParentsOnly)
                 tasks = taskRepository.GetPaginatedAllTasks(Page, TotalRecords);
+            else
+                tasks = taskRepository.GetAll();
 
             return tasks.ToModel();
         }
@@ -73,9 +75,9 @@ namespace TaskMan.Business
             return taskRepository.Get(taskId).ToModel();
         }
 
-        public TaskModel UpdateMyTask(int taskId, TaskModel task)
+        public int UpdateMyTask(int taskId, TaskModel task)
         {
-            return taskRepository.Update(task.ToTaskEntity()) > 0 ? task : null;
+            return taskRepository.Update(task.ToTaskEntity());
         }
     }
 }

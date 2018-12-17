@@ -35,7 +35,7 @@ namespace TaskMan.Data.Tasks
             }
         }
 
-        public IEnumerable<MyTask> GetPaginatedAllTasks(int pageIndex = 0, int pageSize = -1)
+        public IEnumerable<MyTask> GetPaginatedAllTasks(int pageIndex = 0, int pageSize = 0)
         {
             return GetAll()
                 .Skip((pageIndex - 1) * pageSize)

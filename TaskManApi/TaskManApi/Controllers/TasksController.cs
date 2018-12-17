@@ -30,19 +30,17 @@ namespace TaskManApi.Controllers
         [HttpGet]
         //[Route(Name = "GetAllTasks")]
         //[ActionName("GetAllTasks")]
-        public HttpResponseMessage GetAllTasks(int pageIndex, int pageSize)
+        public IHttpActionResult GetAllTasks(int pageIndex, int pageSize)
         {
-            HttpResponseMessage result = new HttpResponseMessage();
             try
             {
                 var data = taskOrchestrator.GetAllTasks(Page: pageIndex, TotalRecords: pageSize);
-                result = Request.CreateResponse(HttpStatusCode.OK, data);
+                return Ok(data);
             }
             catch (Exception ex)
             {
-                result = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, new HttpError(ex, true));
+                return InternalServerError(ex);
             }
-            return result;
         }
 
         //[HttpGet]
@@ -65,6 +63,10 @@ namespace TaskManApi.Controllers
 
         //GET: tasks/
         //[HttpGet]
+        /// <summary>
+        /// Get the Parents only tasks. 
+        /// </summary>
+        /// <returns>List of tasks</returns>
         [Route("api/Tasks/Parent")]
         [ActionName("Parent")]
         public IHttpActionResult GetParentTasks()
@@ -115,7 +117,7 @@ namespace TaskManApi.Controllers
                 try
                 {
                     taskOrchestrator.AddNewTask(newTask);
-                    return Ok(true);
+                    return Created(new Uri(string.Join("/",Request != null ? Request.RequestUri.ToString() : "http://taskmanapi.local", newTask.TaskId)), newTask);
                 }
                 catch (Exception ex)
                 {
@@ -133,10 +135,10 @@ namespace TaskManApi.Controllers
                 try
                 {
                     var updatedData = taskOrchestrator.UpdateMyTask(taskId, value);
-                    if (updatedData == null)
+                    if (updatedData == 0)
                         return BadRequest("Update failed - Either the data doesnt exists or invalid request to update");
                     else
-                        return Ok(updatedData);
+                        return Ok(true);
                 }
                 catch (Exception ex)
                 {
@@ -159,6 +161,25 @@ namespace TaskManApi.Controllers
                     return Ok(true);
             }
             catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        /// <summary>
+        /// End a task by marking the end date as current date
+        /// </summary>
+        /// <param name="taskId">Task Identifier to end</param>
+        /// <returns>status as success or failure on ending the task</returns>
+        [HttpPost]
+        public IHttpActionResult EndTask(int taskId)
+        {
+            try
+            {
+                var result = taskOrchestrator.EndTask(taskId);
+                return Ok(result);
+            }
+            catch(Exception ex)
             {
                 return InternalServerError(ex);
             }

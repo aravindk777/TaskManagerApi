@@ -14,7 +14,7 @@ namespace TaskMan.Business
         int AddNewTask(TaskModel newTask);
         IEnumerable<TaskModel> GetAllTasks(bool ParentsOnly = false, bool ActiveOnly = false, int Page = 0, int TotalRecords = 0);
         TaskModel GetTask(int taskId, string TaskName = "");
-        TaskModel UpdateMyTask(int taskId, TaskModel task);
+        int UpdateMyTask(int taskId, TaskModel task);
         int DeleteTask(int taskId, TaskModel delTask = null);
         bool EndTask(int taskId);
     }

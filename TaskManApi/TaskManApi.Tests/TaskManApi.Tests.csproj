@@ -67,12 +67,15 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseTest.cs" />
+    <Compile Include="Business\TaskOrchestratorTest.cs" />
     <Compile Include="Controller\TaskControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="LoadTestApi.loadtest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -80,13 +83,16 @@
       <Project>{5F41FA2E-9D93-4E7B-9E38-8C3E8A255EAC}</Project>
       <Name>TaskMan.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TaskMan.Data\TaskMan.Data.csproj">
+      <Project>{3EFEE86E-3A86-4388-8BF6-45B0D5720855}</Project>
+      <Name>TaskMan.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TaskManApi\TaskManApi.csproj">
       <Project>{2E13B1F9-05CA-43AD-98D8-103C8B924CA4}</Project>
       <Name>TaskManApi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Business\" />
     <Folder Include="Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
