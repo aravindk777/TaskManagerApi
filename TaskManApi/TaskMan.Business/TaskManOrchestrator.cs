@@ -29,7 +29,11 @@ namespace TaskMan.Business
         public int DeleteTask(int taskId, TaskModel delTask = null)
         {
             if (delTask != null)
+            {
+                if (taskId != delTask.TaskId)
+                    throw new InvalidOperationException("TaskId requested is not matching with the Task to be deleted.");
                 return taskRepository.Delete(delTask.ToTaskEntity());
+            }
             else
             {
                 var taskToDelete = taskRepository.Get(taskId);
@@ -77,6 +81,8 @@ namespace TaskMan.Business
 
         public int UpdateMyTask(int taskId, TaskModel task)
         {
+            if (taskId != task.TaskId)
+                throw new InvalidOperationException("TaskId requested is not matching with the Task to be updated with.");
             return taskRepository.Update(task.ToTaskEntity());
         }
     }

@@ -1,13 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/* 
+ * Class - ApiConfiguration file
+ * Created by: Aravind Kothandaraman (aravind.pk@aol.in)
+ */
+
+using Swashbuckle.Application;
 using System.Web.Http;
-using Unity.AspNet.WebApi;
 
 namespace TaskManApi
 {
+    /// <summary>
+    /// Web Api startup configuration class
+    /// </summary>
     public static class WebApiConfig
     {
+        /// <summary>
+        /// Registration method
+        /// </summary>
+        /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
@@ -17,25 +26,21 @@ namespace TaskManApi
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            config.Routes.IgnoreRoute("schema","{resource}.axd/{*pathInfo}");
+
+            config.Routes.MapHttpRoute(
+                name: "swagger_root",
+                routeTemplate: "",
+                defaults: null,
+                constraints: null,
+                handler: new RedirectHandler((message => message.RequestUri.ToString()), "swagger"));
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{TaskId}",
                 defaults: new { TaskId = RouteParameter.Optional }
                 //constraints: new { TaskId = @"^[0-9]+$" }
             );
-
-            //config.Routes.MapHttpRoute(
-            //    name: "DefaultApiWithActionName",
-            //    routeTemplate: "{controller}/{action}/{name}",
-            //    defaults: null,
-            //    constraints: new { name = @"&^[a-z]+$" }
-            //);
-
-            //config.Routes.MapHttpRoute(
-            //    name: "ApiByAction",
-            //    routeTemplate: "{controller}/{action}",
-            //    defaults: new { action = "Get" }
-            //    );
         }
     }
 }

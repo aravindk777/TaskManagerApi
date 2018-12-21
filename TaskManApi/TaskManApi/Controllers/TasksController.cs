@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿/* 
+ * Class -for Task Controller
+ * Created by: Aravind Kothandaraman (aravind.pk@aol.in)
+ */ 
+
+using System;
 using System.Web.Http;
 using TaskMan.Business;
 using TaskMan.Business.Model;
 
 namespace TaskManApi.Controllers
 {
+    /// <summary>
+    /// Task Controller class holding all the api routes for handling operations on TaskManager
+    /// </summary>
     //[RoutePrefix("api")]
     public class TasksController : ApiController
     {
         ITaskManLogic taskOrchestrator;
 
+        /// <summary>
+        /// DI constructor
+        /// </summary>
+        /// <param name="taskOrchestrator"></param>
         public TasksController(ITaskManLogic taskOrchestrator)
         {
             this.taskOrchestrator = taskOrchestrator;
@@ -43,6 +51,10 @@ namespace TaskManApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns all active tasks that hasnt ended yet
+        /// </summary>
+        /// <returns>List of all active task</returns>
         //[HttpGet]
         [Route("api/Tasks/Active")]
         [ActionName("Active")]
@@ -85,6 +97,11 @@ namespace TaskManApi.Controllers
         }
 
         // GET: Tasks/5
+        /// <summary>
+        /// Get a task object using the Task Id
+        /// </summary>
+        /// <param name="TaskId">Task Identifier to loate the data</param>
+        /// <returns>TaskModel object</returns>
         [HttpGet]
         //[ActionName("GetTask")]
         public IHttpActionResult Get(int TaskId)
@@ -110,6 +127,11 @@ namespace TaskManApi.Controllers
         }
 
         // POST: Tasks
+        /// <summary>
+        /// Creates a new task
+        /// </summary>
+        /// <param name="newTask">Task information</param>
+        /// <returns>New task Url</returns>
         [HttpPost]
         public IHttpActionResult Post([FromBody]TaskModel newTask)
         {
@@ -117,7 +139,7 @@ namespace TaskManApi.Controllers
                 try
                 {
                     taskOrchestrator.AddNewTask(newTask);
-                    return Created(new Uri(string.Join("/",Request != null ? Request.RequestUri.ToString() : "http://taskmanapi.local", newTask.TaskId)), newTask);
+                    return Created(new Uri(string.Join("/", Request != null ? Request.RequestUri.ToString() : "http://taskmanapi.local", newTask.TaskId)), newTask);
                 }
                 catch (Exception ex)
                 {
@@ -128,6 +150,12 @@ namespace TaskManApi.Controllers
         }
 
         // PUT: Tasks/5
+        /// <summary>
+        /// Updates a task for various attributes
+        /// </summary>
+        /// <param name="taskId">TaskId to locate the task for update</param>
+        /// <param name="value">Task data to be updated</param>
+        /// <returns>boolean status upon updating</returns>
         [HttpPut]
         public IHttpActionResult Put(int taskId, [FromBody]TaskModel value)
         {
@@ -142,6 +170,8 @@ namespace TaskManApi.Controllers
                 }
                 catch (Exception ex)
                 {
+                    if (ex.GetType() == typeof(InvalidOperationException))
+                        return BadRequest(ex.Message);
                     return InternalServerError(ex);
                 }
             else
@@ -149,6 +179,12 @@ namespace TaskManApi.Controllers
         }
 
         // DELETE: Tasks/5
+        /// <summary>
+        /// Deletes a task by TaskId
+        /// </summary>
+        /// <param name="taskId">Unique identifier to identify a task in the Repository and delete.</param>
+        /// <remarks>note - this is a hard Delete. If you are looking for soft delete or ending a task, please use the EndTask route.</remarks>
+        /// <returns>boolean status upon deletion process.</returns>
         [HttpDelete]
         public IHttpActionResult Delete(int taskId)
         {
@@ -162,6 +198,8 @@ namespace TaskManApi.Controllers
             }
             catch (Exception ex)
             {
+                if (ex.GetType() == typeof(InvalidOperationException))
+                    return BadRequest(ex.Message);
                 return InternalServerError(ex);
             }
         }
@@ -179,7 +217,7 @@ namespace TaskManApi.Controllers
                 var result = taskOrchestrator.EndTask(taskId);
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return InternalServerError(ex);
             }

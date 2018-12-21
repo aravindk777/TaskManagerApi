@@ -64,18 +64,24 @@ namespace TaskManApi.Tests.Business
             };
         }
 
-        [TestCase(false, false, 0, 0, ExpectedResult = 11, TestName = "All Tasks", Description = "All Tasks")]          // all tasks
-        [TestCase(true, false, 0, 0, ExpectedResult = 3, TestName = "Parents Tasks only", Description = "Parent tasks only")]            // Parents only tasks - note: ParenttaskId = 0 is also considered as having a parent Task with Id=0
-        [TestCase(false, true, 0, 0, ExpectedResult = 8, TestName = "Active tasks only", Description = "Active tasks only")]             // Active tasks only
-        [TestCase(true, true, 0, 0, ExpectedResult = 2, TestName = "Active Parent tasks only", Description = "Active Parent tasks only")]             // Active Parent tasks only
-        [TestCase(false, false, 4, 3, ExpectedResult = 2, TestName = "Pagination", Description = "Pagination")]           // pagination
-        [TestCase(false, true, 2, 3, ExpectedResult = 3, TestName = "Pagination for active tasks only", Description = "Pagination for active tasks only")]           // pagination for active tasks
+        [TestCase(false, false, 0, 0, 11, TestName = "All Tasks", Description = "All Tasks")]          // all tasks
+        [TestCase(true, false, 0, 0, 3, TestName = "Parents Tasks only", Description = "Parent tasks only")]            // Parents only tasks - note: ParenttaskId = 0 is also considered as having a parent Task with Id=0
+        [TestCase(false, true, 0, 0, 8, TestName = "Active tasks only", Description = "Active tasks only")]             // Active tasks only
+        [TestCase(true, true, 0, 0, 2, TestName = "Active Parent tasks only", Description = "Active Parent tasks only")]             // Active Parent tasks only
+        [TestCase(false, false, 4, 3, 2, TestName = "Pagination", Description = "Pagination")]           // pagination
+        [TestCase(false, true, 2, 3, 3, TestName = "Pagination for active tasks only", Description = "Pagination for active tasks only")]           // pagination for active tasks
         [Test]
         public void Test_For_Orchestrator_GetAllTasks(bool parentsOnly, bool activeOnly, int pageIndex, int pageSize, int expectedResultCount)
         {
             // Arrange
             mockTaskRepo.Setup(tRepo => tRepo.GetAll()).Returns(mockedDataSets);
             mockTaskRepo.Setup(repo => repo.GetActiveTasks(pageIndex, pageSize)).Returns(mockedDataSets.Where(t => !t.EndDate.HasValue || t.EndDate.Value > System.DateTime.Now));
+            if (activeOnly && pageSize > 0 && pageIndex > 0)
+                mockTaskRepo.Setup(repo => repo.GetActiveTasks(pageIndex, pageSize))
+                            .Returns(mockedDataSets
+                                .Where(t => !t.EndDate.HasValue || t.EndDate.Value > System.DateTime.Now)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize));
             mockTaskRepo.Setup(repo => repo.GetPaginatedAllTasks(pageIndex, pageSize)).Returns(mockedDataSets.Skip((pageIndex - 1) * pageSize).Take(pageSize));
 
             // Act
@@ -86,9 +92,9 @@ namespace TaskManApi.Tests.Business
             Assert.AreEqual(expectedResultCount, result.Count());
         }
 
-        [TestCase(0, ExpectedResult = 1, TestName = "Add new task")]
-        [TestCase(1, ExpectedResult = 1, TestName = "Add new task with no other fields")]
-        [TestCase(2, ExpectedResult = 1, TestName = "Add new task with no task name")]
+        [TestCase(0, 1, TestName = "Add new task")]
+        [TestCase(1, 1, TestName = "Add new task with no other fields")]
+        [TestCase(2, 1, TestName = "Add new task with no task name")]
         [Test]
         public void Test_For_Orchestrator_AddNewTask(int arryPosForMockAdd, int expectedResult)
         {
@@ -125,21 +131,79 @@ namespace TaskManApi.Tests.Business
             Assert.AreEqual(expectedParentTaskId, result.ParentTaskId);
         }
 
-        [TestCase(1)]
+        [TestCase(1, 1, TestName = "Updating Task Repo with success result")]
+        [TestCase(2, 0, TestName = "Updating Task Repo with failure result")]
+        [TestCase(3, -1, TestName = "Updating wrong task Id for exception validation")]
         [Test]
-        public void Test_For_Orchestrator_Update(int mockTaskid)
+        public void Test_For_Orchestrator_Update(int mockTaskid, int expectedResult)
         {
+            // Arrange
             MyTask taskToUpdate = mockedDataSets.FirstOrDefault(t => t.TaskId == mockTaskid);
-            mockTaskRepo.Setup(repo => repo.Update(It.IsAny<MyTask>()))
-                        .Returns(1);
+            if (expectedResult >= 0)
+                mockTaskRepo.Setup(repo => repo.Update(It.IsAny<MyTask>()))
+                            .Returns(expectedResult);
+            else
+                mockTaskRepo.Setup(repo => repo.Update(taskToUpdate)).Throws<System.InvalidOperationException>();
 
+            // Act
             TaskMan.Business.Model.TaskModel updatingModel = testDataForAdd[0];
-            updatingModel.TaskId = mockTaskid;
-            var result = mockTaskOrchestrator.UpdateMyTask(mockTaskid, updatingModel);
+            updatingModel.TaskId = expectedResult >= 0 ? mockTaskid : expectedResult;
 
             // Assert
-            Assert.AreEqual(1, result);
-            //Assert.AreEqual(mockTaskid, result.TaskId);
+            int actualResult;
+            if (expectedResult >= 0)
+            {
+                actualResult = mockTaskOrchestrator.UpdateMyTask(mockTaskid, updatingModel);
+                Assert.AreEqual(expectedResult, actualResult);
+            }
+            else
+                Assert.Throws<InvalidOperationException>(() => mockTaskOrchestrator.UpdateMyTask(mockTaskid, updatingModel));
+        }
+
+        [TestCase(1, 1, TestName = "Deleting Task Repo with success result")]
+        [TestCase(2, 0, TestName = "Deleting Task Repo with failure result")]
+        [TestCase(3, -1, TestName = "Deleting wrong task Id for exception validation")]
+        [Test]
+        public void Test_For_Orchestrator_Delete(int mockTaskid, int expectedResult)
+        {
+            // Arrange
+            MyTask taskToUpdate = mockedDataSets.FirstOrDefault(t => t.TaskId == mockTaskid);
+            if (expectedResult >= 0)
+                mockTaskRepo.Setup(repo => repo.Delete(It.IsAny<MyTask>()))
+                        .Returns(expectedResult);
+            else
+                mockTaskRepo.Setup(repo => repo.Delete(taskToUpdate)).Throws<System.InvalidOperationException>();
+
+            // Act
+            TaskMan.Business.Model.TaskModel deleteTaskModel = testDataForAdd[0];
+            deleteTaskModel.TaskId = expectedResult >= 0 ? mockTaskid : expectedResult;
+
+            // Assert
+            if (expectedResult >= 0)
+            {
+                int actualResult = mockTaskOrchestrator.DeleteTask(mockTaskid, deleteTaskModel);
+                Assert.AreEqual(expectedResult, actualResult);
+            }
+            else
+                Assert.Throws<InvalidOperationException>(() => mockTaskOrchestrator.DeleteTask(mockTaskid, deleteTaskModel));
+        }
+
+        [TestCase(1, true, TestName = "End task test for success")]
+        [TestCase(2, false, TestName = "End task test for failure")]
+        [Test]
+        public void Test_For_Orchestrator_Endtask(int mockTaskId, bool expectedResult)
+        {
+            // Arrange
+            MyTask taskToEnd = mockedDataSets.FirstOrDefault(t => t.TaskId == mockTaskId);
+            mockTaskRepo.Setup(repo => repo.Get(mockTaskId)).Returns(taskToEnd);
+            mockTaskRepo.Setup(repo => repo.Update(taskToEnd)).Returns(expectedResult ? 1 : 0);
+
+            // Act
+            var actualResult = mockTaskOrchestrator.EndTask(mockTaskId);
+
+            // Assert
+            Assert.AreEqual(expectedResult, actualResult);
+            mockTaskRepo.VerifyAll();
         }
     }
 }
