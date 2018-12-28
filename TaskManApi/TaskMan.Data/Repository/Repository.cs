@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -64,11 +65,14 @@ namespace TaskMan.Data.Repository
             {
                 Context.Set<T>().Attach(entity);
                 Context.Entry(entity).State = EntityState.Modified;
+
+                Context.Set<T>().AddOrUpdate(entity);
+                //Context.Entry(entity).CurrentValues.SetValues(entity);
                 return Context.SaveChanges();
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }
