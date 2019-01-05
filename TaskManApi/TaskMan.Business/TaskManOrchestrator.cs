@@ -79,6 +79,11 @@ namespace TaskMan.Business
             return taskRepository.Get(taskId).ToModel();
         }
 
+        public int GetTotalTasksCount()
+        {
+            return taskRepository.GetTotalTasksCount();
+        }
+
         public int UpdateMyTask(int taskId, TaskModel task)
         {
             if (taskId != task.TaskId)

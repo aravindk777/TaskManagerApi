@@ -12,6 +12,9 @@ namespace TaskManApi
     /// </summary>
     public class SwaggerConfig
     {
+        /// <summary>
+        /// Swagger configuration registration
+        /// </summary>
         public static void Register()
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;

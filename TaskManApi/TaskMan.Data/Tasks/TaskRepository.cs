@@ -41,5 +41,10 @@ namespace TaskMan.Data.Tasks
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize);
         }
+
+        public int GetTotalTasksCount()
+        {
+            return GetAll().Count();
+        }
     }
 }

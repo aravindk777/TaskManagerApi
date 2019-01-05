@@ -1,3 +1,4 @@
+using NLog;
 using System;
 using TaskMan.Business;
 using TaskMan.Data.Entities;
@@ -50,6 +51,7 @@ namespace TaskManApi
             container.RegisterType<ITaskManLogic, TaskManOrchestrator>(new HierarchicalLifetimeManager());
             container.RegisterType<ITaskRepository, TaskRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IRepository<MyTask>, Repository<MyTask>>(new HierarchicalLifetimeManager());
+            //container.RegisterType<ILogger, LogManager.CreateNullLogger()>new HierarchicalLifetimeManager();
 
             container.RegisterType<TasksController>();
         }

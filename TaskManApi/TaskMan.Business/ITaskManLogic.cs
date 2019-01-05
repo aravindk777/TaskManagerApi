@@ -17,5 +17,6 @@ namespace TaskMan.Business
         int UpdateMyTask(int taskId, TaskModel task);
         int DeleteTask(int taskId, TaskModel delTask = null);
         bool EndTask(int taskId);
+        int GetTotalTasksCount();
     }
 }

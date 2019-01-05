@@ -12,5 +12,6 @@ namespace TaskMan.Data.Tasks
     {
         IEnumerable<MyTask> GetPaginatedAllTasks(int pageIndex, int pageSize);
         IEnumerable<MyTask> GetActiveTasks(int pageIndex = 0, int pageSize = 0);
+        int GetTotalTasksCount();
     }
 }

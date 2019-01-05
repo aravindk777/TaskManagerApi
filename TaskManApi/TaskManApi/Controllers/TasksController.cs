@@ -1,12 +1,15 @@
 ﻿/* 
  * Class -for Task Controller
  * Created by: Aravind Kothandaraman (aravind.pk@aol.in)
- */ 
+ */
 
 using System;
+using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TaskMan.Business;
 using TaskMan.Business.Model;
+using TaskManApi.Extensions;
 
 namespace TaskManApi.Controllers
 {
@@ -14,6 +17,7 @@ namespace TaskManApi.Controllers
     /// Task Controller class holding all the api routes for handling operations on TaskManager
     /// </summary>
     //[RoutePrefix("api")]
+    [EnableCors("*", "*", "*")]
     public class TasksController : ApiController
     {
         ITaskManLogic taskOrchestrator;
@@ -34,15 +38,25 @@ namespace TaskManApi.Controllers
         /// </summary>
         /// <param name="pageIndex">Non-zero based Page Index. Leave it empty or 0 if no pagination is needed</param>
         /// <param name="pageSize">Non-zero based Page Size. Leave it empty or 0 if no pagination is needed</param>
+        /// <param name="filters">Search Filters</param>
         /// <returns>Collection of Tasks</returns>
         [HttpGet]
         //[Route(Name = "GetAllTasks")]
         //[ActionName("GetAllTasks")]
-        public IHttpActionResult GetAllTasks(int pageIndex, int pageSize)
+        public IHttpActionResult GetAllTasks(int pageIndex, int pageSize, [FromUri] SearchFilters filters)
         {
             try
             {
                 var data = taskOrchestrator.GetAllTasks(Page: pageIndex, TotalRecords: pageSize);
+                if (filters != null)
+                {
+                    data = !string.IsNullOrEmpty(filters.TaskName) ? data.Where(t => t.TaskName.ToLower().IndexOf(filters.TaskName.ToLower()) != -1) : data; 
+                    data = !string.IsNullOrEmpty(filters.ParentTask) ? data.Where(t => t.ParentTask.ToLower().IndexOf(filters.ParentTask.ToLower()) != -1) : data;
+                    data = filters.PriorityFrom.HasValue && filters.PriorityFrom.Value != 0 ? data.Where(t => t.Priority >= filters.PriorityFrom.Value) : data;
+                    data = filters.PriorityTo.HasValue && filters.PriorityTo.Value != 0 ? data.Where(t => t.Priority <= filters.PriorityTo.Value) : data;
+                    data = filters.StartDate.HasValue ? data.Where(t => t.StartDate >= filters.StartDate.Value) : data;
+                    data = filters.EndDate.HasValue ? data.Where(t => t.EndDate <= filters.EndDate.Value) : data;
+                }
                 return Ok(data);
             }
             catch (Exception ex)
@@ -63,7 +77,18 @@ namespace TaskManApi.Controllers
             IHttpActionResult result = Ok();
             try
             {
-                var data = taskOrchestrator.GetAllTasks(ActiveOnly: true);
+                var data = taskOrchestrator.GetAllTasks(ActiveOnly: true)
+                    .Select(tasks => new {
+                        tasks.TaskId,
+                        tasks.TaskName,
+                        tasks.Priority,
+                        tasks.ParentTask,
+                        tasks.ParentTaskId,
+                        tasks.StartDate,
+                        tasks.EndDate,
+                        tasks.Status,
+                        //Active = !(tasks.EndDate.HasValue && tasks.EndDate.Value.CompareTo(DateTime.Today) <= 0)
+                    });
                 result = Ok(data);
             }
             catch (Exception ex)
@@ -86,7 +111,19 @@ namespace TaskManApi.Controllers
             IHttpActionResult result = Ok();
             try
             {
-                var data = taskOrchestrator.GetAllTasks(ParentsOnly: true);
+                var data = taskOrchestrator.GetAllTasks(ParentsOnly: true)
+                            .Select(tasks => new
+                            {
+                                tasks.TaskId,
+                                tasks.TaskName,
+                                tasks.Priority,
+                                tasks.ParentTask,
+                                tasks.ParentTaskId,
+                                tasks.StartDate,
+                                tasks.EndDate,
+                                tasks.Status,
+                                //Active = !(tasks.EndDate.HasValue && tasks.EndDate.Value.CompareTo(DateTime.Today) <= 0)
+                            });
                 result = Ok(data);
             }
             catch (Exception ex)
@@ -221,6 +258,18 @@ namespace TaskManApi.Controllers
             {
                 return InternalServerError(ex);
             }
+        }
+
+        /// <summary>
+        /// Get Total tasks count
+        /// </summary>
+        /// <returns>returns total records count</returns>
+        [Route("api/Tasks/Total")]
+        [ActionName("Total")]
+        [HttpGet]
+        public int Total()
+        {
+            return taskOrchestrator.GetTotalTasksCount();
         }
     }
 }

@@ -22,12 +22,12 @@ namespace TaskMan.Data.Repository
         {
             try
             {
-                Context.Set<T>().Add(entity);
+                Context.Set<T>().AddOrUpdate(entity);
                 return Context.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -38,9 +38,9 @@ namespace TaskMan.Data.Repository
                 Context.Set<T>().Remove(entity);
                 return Context.SaveChanges();
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -63,8 +63,8 @@ namespace TaskMan.Data.Repository
         {
             try
             {
-                Context.Set<T>().Attach(entity);
-                Context.Entry(entity).State = EntityState.Modified;
+                //Context.Set<T>().Attach(entity);
+                //Context.Entry(entity).State = EntityState.Modified;
 
                 Context.Set<T>().AddOrUpdate(entity);
                 //Context.Entry(entity).CurrentValues.SetValues(entity);
