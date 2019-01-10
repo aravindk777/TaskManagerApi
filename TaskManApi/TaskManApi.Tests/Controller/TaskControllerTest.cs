@@ -8,6 +8,7 @@ using TaskMan.Business.Model;
 using TaskManApi.Controllers;
 using System.Web.Http.Results;
 using System.Web.Http;
+using TaskManApi.Extensions;
 
 namespace TaskManApi.Tests.Controller
 {
@@ -63,7 +64,7 @@ namespace TaskManApi.Tests.Controller
             mockOrchestrator.Setup(t => t.GetAllTasks(It.IsAny<bool>(), It.IsAny<bool>(), mockPageIndex, mockPageSize)).Returns(dataToCompare);
 
             //Act
-            var result = testControllerObj.GetAllTasks(mockPageIndex, mockPageSize);
+            var result = testControllerObj.GetAllTasks(mockPageIndex, mockPageSize, It.IsAny<SearchFilters>());
             IEnumerable<TaskModel> actualData = ((OkNegotiatedContentResult<IEnumerable<TaskModel>>)result).Content;
 
             //Assert
