@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebTest Name="01_ApiTest_Get" Id="e1f844f5-1e34-46aa-bed2-6d668047edcc" Owner="" Priority="2147483647" Enabled="True" CssProjectStructure="" CssIteration="" Timeout="0" WorkItemIds="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" Description="" CredentialUserName="" CredentialPassword="" PreAuthenticate="True" Proxy="default" StopOnError="False" RecordedResultFile="WebTest1.806db509-431f-4297-8712-f42771c62b40.rec.webtestresult" ResultsLocale="">
+  <Items>
+    <Loop UniqueStringId="8a2f2902-524c-45b5-accd-3433d3c026fc">
+      <ConditionalRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ForLoopRule, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="For Loop" Description="The rule represents a traditional &quot;for&quot; loop. The context parameter is initialized before the first loop iteration. The loop statements get executed while the content of the context parameter satisfies the comparison with the provided value. The step value is applied at the end of each loop iteration." MaxIterations="-1" AdvanceDataCursors="False">
+        <RuleParameters>
+          <RuleParameter Name="ContextParameterName" Value="TaskId" />
+          <RuleParameter Name="ComparisonOperator" Value="&lt;=" />
+          <RuleParameter Name="TerminatingValue" Value="15" />
+          <RuleParameter Name="InitialValue" Value="1" />
+          <RuleParameter Name="IncrementValue" Value="1" />
+        </RuleParameters>
+      </ConditionalRule>
+      <Items>
+        <Request Method="GET" Guid="ab85f5b8-5f58-4bfa-903a-744e7e4d5fff" Version="1.1" Url="http://localhost/TaskManApi/api/Tasks/{{TaskId}}" ThinkTime="6" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+          <Headers>
+            <Header Name="Accept" Value="application/json" />
+            <Header Name="Referer" Value="http://localhost/TaskManApi/swagger/ui/index" />
+          </Headers>
+        </Request>
+      </Items>
+    </Loop>
+    <Loop UniqueStringId="0c85dc66-4409-4681-9ea4-99588febe102">
+      <ConditionalRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ForLoopRule, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="For Loop" Description="The rule represents a traditional &quot;for&quot; loop. The context parameter is initialized before the first loop iteration. The loop statements get executed while the content of the context parameter satisfies the comparison with the provided value. The step value is applied at the end of each loop iteration." MaxIterations="-1" AdvanceDataCursors="False">
+        <RuleParameters>
+          <RuleParameter Name="ContextParameterName" Value="TaskId" />
+          <RuleParameter Name="ComparisonOperator" Value="&lt;=" />
+          <RuleParameter Name="TerminatingValue" Value="5" />
+          <RuleParameter Name="InitialValue" Value="1" />
+          <RuleParameter Name="IncrementValue" Value="1" />
+        </RuleParameters>
+      </ConditionalRule>
+      <Items>
+        <Request Method="GET" Guid="4733e79b-2228-4e9d-b9b6-ace9250eaba8" Version="1.1" Url="http://localhost/TaskManApi/api/Tasks" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="0" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False">
+          <Headers>
+            <Header Name="Accept" Value="application/json" />
+          </Headers>
+          <QueryStringParameters>
+            <QueryStringParameter Name="pageIndex" Value="{{TaskId}}" RecordedValue="" CorrelationBinding="" UrlEncode="True" UseToGroupResults="False" />
+            <QueryStringParameter Name="pageSize" Value="{{MaxTasks}}" RecordedValue="" CorrelationBinding="" UrlEncode="True" UseToGroupResults="False" />
+          </QueryStringParameters>
+        </Request>
+      </Items>
+    </Loop>
+  </Items>
+  <ContextParameters>
+    <ContextParameter Name="TaskId" Value="" />
+    <ContextParameter Name="MaxTasks" Value="4" />
+  </ContextParameters>
+  <ValidationRules>
+    <ValidationRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ValidateResponseUrl, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="Response URL" Description="Validates that the response URL after redirects are followed is the same as the recorded response URL.  QueryString parameters are ignored." Level="Low" ExectuionOrder="BeforeDependents" />
+    <ValidationRule Classname="Microsoft.VisualStudio.TestTools.WebTesting.Rules.ValidationRuleResponseTimeGoal, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="Response Time Goal" Description="Validates that the response time for the request is less than or equal to the response time goal as specified on the request.  Response time goals of zero will be ignored." Level="Low" ExectuionOrder="AfterDependents">
+      <RuleParameters>
+        <RuleParameter Name="Tolerance" Value="0" />
+      </RuleParameters>
+    </ValidationRule>
+  </ValidationRules>
+  <WebTestPlugins>
+    <WebTestPlugin Classname="Microsoft.SystemCenter.Cloud.GsmPlugins.RandomIntGeneratorWebTestPlugin, Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" DisplayName="Generate Random Integer" Description="Generates a random integer.">
+      <RuleParameters>
+        <RuleParameter Name="ContextParameterName" Value="TaskId" />
+        <RuleParameter Name="MaxValue" Value="10" />
+        <RuleParameter Name="MinValue" Value="1" />
+      </RuleParameters>
+    </WebTestPlugin>
+  </WebTestPlugins>
+</WebTest>

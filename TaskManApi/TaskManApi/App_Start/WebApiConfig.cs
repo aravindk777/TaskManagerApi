@@ -4,6 +4,7 @@
  */
 
 using Swashbuckle.Application;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 
 namespace TaskManApi
@@ -41,6 +42,9 @@ namespace TaskManApi
                 defaults: new { TaskId = RouteParameter.Optional }
                 //constraints: new { TaskId = @"^[0-9]+$" }
             );
+
+            config.Formatters.XmlFormatter.AddQueryStringMapping("format", "xml", "text/xml");
+            config.Formatters.JsonFormatter.AddQueryStringMapping("format", "json", "application/json");
         }
     }
 }
