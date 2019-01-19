@@ -77,18 +77,18 @@ namespace TaskManApi.Controllers
             IHttpActionResult result = Ok();
             try
             {
-                var data = taskOrchestrator.GetAllTasks(ActiveOnly: true)
-                    .Select(tasks => new {
-                        tasks.TaskId,
-                        tasks.TaskName,
-                        tasks.Priority,
-                        tasks.ParentTask,
-                        tasks.ParentTaskId,
-                        tasks.StartDate,
-                        tasks.EndDate,
-                        tasks.Status,
-                        //Active = !(tasks.EndDate.HasValue && tasks.EndDate.Value.CompareTo(DateTime.Today) <= 0)
-                    });
+                var data = taskOrchestrator.GetAllTasks(ActiveOnly: true);
+                    //.Select(tasks => new {
+                    //    tasks.TaskId,
+                    //    tasks.TaskName,
+                    //    tasks.Priority,
+                    //    tasks.ParentTask,
+                    //    tasks.ParentTaskId,
+                    //    tasks.StartDate,
+                    //    tasks.EndDate,
+                    //    tasks.Status,
+                    //    //Active = !(tasks.EndDate.HasValue && tasks.EndDate.Value.CompareTo(DateTime.Today) <= 0)
+                    //});
                 result = Ok(data);
             }
             catch (Exception ex)
@@ -111,19 +111,19 @@ namespace TaskManApi.Controllers
             IHttpActionResult result = Ok();
             try
             {
-                var data = taskOrchestrator.GetAllTasks(ParentsOnly: true)
-                            .Select(tasks => new
-                            {
-                                tasks.TaskId,
-                                tasks.TaskName,
-                                tasks.Priority,
-                                tasks.ParentTask,
-                                tasks.ParentTaskId,
-                                tasks.StartDate,
-                                tasks.EndDate,
-                                tasks.Status,
-                                //Active = !(tasks.EndDate.HasValue && tasks.EndDate.Value.CompareTo(DateTime.Today) <= 0)
-                            });
+                var data = taskOrchestrator.GetAllTasks(ParentsOnly: true);
+                            //.Select(tasks => new
+                            //{
+                            //    tasks.TaskId,
+                            //    tasks.TaskName,
+                            //    tasks.Priority,
+                            //    tasks.ParentTask,
+                            //    tasks.ParentTaskId,
+                            //    tasks.StartDate,
+                            //    tasks.EndDate,
+                            //    tasks.Status,
+                            //    //Active = !(tasks.EndDate.HasValue && tasks.EndDate.Value.CompareTo(DateTime.Today) <= 0)
+                            //});
                 result = Ok(data);
             }
             catch (Exception ex)
