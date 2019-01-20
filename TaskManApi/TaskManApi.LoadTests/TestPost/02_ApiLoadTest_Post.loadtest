@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<LoadTest Name="02_ApiLoadTest_Post" Description="" Owner="" storage="c:\ak\gitself\taskmanagerapi\taskmanapi\taskmanapi.loadtests\testpost\02_apiloadtest_post.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings - Post 1" Id="8049a59c-ffaf-45b4-a911-6cb85b5ca43b" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<LoadTest Name="02_ApiLoadTest_Post" Description="" Owner="" storage="c:\166911\taskmanager\api\taskmanapi\taskmanapi.loadtests\testpost\02_apiloadtest_post.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings - Post 1" Id="b4f62024-6679-4074-8c8b-18a783d036f8" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Scenarios>
     <Scenario Name="LoadTest_POST" DelayBetweenIterations="2" PercentNewUsers="0" IPSwitching="false" TestMixType="PercentageOfTestsStarted" ApplyDistributionToPacingDelay="true" MaxTestIterations="0" DisableDuringWarmup="false" DelayStartTime="0" AllowedAgents="">
       <ThinkProfile Value="0.2" Pattern="NormalDistribution" />

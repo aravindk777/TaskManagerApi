@@ -17,7 +17,7 @@
             <Header Name="Accept" Value="application/json" />
             <Header Name="Referer" Value="http://localhost/TaskManApi/swagger/ui/index" />
           </Headers>
-          <StringHttpBody ContentType="application/json" InsertByteOrderMark="False">ewAKACAAIAAiAFQAYQBzAGsATgBhAG0AZQAiADoAIAAiAEwAbwBhAGQAIABUAGUAcwB0ACAAUABPAFMAVAAgAFQAYQBzAGsAIAAiACAAKwAgAHsAewBDAG8AdQBuAHQAZQByAH0AfQAsAAoAIAAgACIAUAByAGkAbwByAGkAdAB5ACIAOgAgAHsAewBDAG8AdQBuAHQAZQByAH0AfQAsAAoAfQA=</StringHttpBody>
+          <StringHttpBody ContentType="application/json" InsertByteOrderMark="False">ewAKACAAIAAiAFQAYQBzAGsATgBhAG0AZQAiADoAIAAiAEwAbwBhAGQAIABUAGUAcwB0ACAAUABPAFMAVAAgAFQAYQBzAGsAIAAtACAAewB7AEMAbwB1AG4AdABlAHIAfQB9ACIALAAKACAAIAAiAFAAcgBpAG8AcgBpAHQAeQAiADoAIAB7AHsAQwBvAHUAbgB0AGUAcgB9AH0ALAAKAH0A</StringHttpBody>
         </Request>
       </Items>
     </Loop>

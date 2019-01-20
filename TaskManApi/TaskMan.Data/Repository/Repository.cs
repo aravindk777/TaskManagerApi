@@ -22,6 +22,8 @@ namespace TaskMan.Data.Repository
         {
             try
             {
+                if (Context.Entry(entity).State == EntityState.Detached)
+                    Context.Entry(entity).State = EntityState.Added;
                 Context.Set<T>().AddOrUpdate(entity);
                 return Context.SaveChanges();
             }
